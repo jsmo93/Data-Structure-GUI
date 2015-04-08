@@ -37,3 +37,15 @@
               (send dc set-font old-font)
               (send dc draw-text ".." (+ 41 (* 55 col)) (- (* 40 row) 1))))
          (send dc set-font old-font))))
+
+(provide element-categorizer)
+(define (element-categorizer elmnt)
+  (cond ((pair? elmnt)
+         (cond ((null? (car elmnt))
+                (if (null? (cdr elmnt))
+                    'null-node
+                    'bypass-node))
+               ((null? (cdr elmnt)) 'terminal-node)
+               (else 'node)))
+        ((null? elmnt) 'null)
+        (else 'data)))
