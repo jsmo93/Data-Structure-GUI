@@ -70,6 +70,30 @@
     (send p close)
     p))
 
+(provide spacer)
+(define spacer-target (make-bitmap 55 40))
+(define spacer-dc (new bitmap-dc% [bitmap spacer-target]))
+(define spacer
+  (let ([p (new dc-path%)])
+    (send p move-to 0 7)
+    (send p line-to 54 7)
+    (send p move-to 54 7)
+    (send p line-to 44 12)
+    (send p move-to 54 7)
+    (send p line-to 44 2)
+    (send p close)
+    p))
+
+(provide right-line)
+(define right-line-target (make-bitmap 55 40))
+(define right-line-dc (new bitmap-dc% [bitmap right-line-target]))
+(define right-line
+  (let ([p (new dc-path%)])
+    (send p move-to 23 7)
+    (send p line-to 54 7)
+    (send p close)
+    p))
+
 (provide node)
 (define node-target (make-bitmap 55 40))
 (define node-dc (new bitmap-dc% [bitmap node-target]))
@@ -78,6 +102,17 @@
     (send p append double-box)
     (send p append down-arrow)
     (send p append right-arrow)
+    (send p close)
+    p))
+
+(provide spaced-node)
+(define spaced-node-target (make-bitmap 55 40))
+(define spaced-node-dc (new bitmap-dc% [bitmap spaced-node-target]))
+(define spaced-node
+  (let ([p (new dc-path%)])
+    (send p append double-box)
+    (send p append down-arrow)
+    (send p append right-line)
     (send p close)
     p))
 
@@ -105,13 +140,15 @@
     (send p close)
     p))
 
-(provide spacer)
-(define spacer-target (make-bitmap 55 40))
-(define spacer-dc (new bitmap-dc% [bitmap spacer-target]))
-(define spacer
+(provide spaced-bypass-node)
+(define spaced-bypass-node-target (make-bitmap 55 40))
+(define spaced-bypass-node-dc (new bitmap-dc% [bitmap spaced-bypass-node-target]))
+(define spaced-bypass-node
   (let ([p (new dc-path%)])
-    (send p append wide-box)
-    (send p append right-arrow)
+    (send p append double-box)
+    (send p move-to 0 0)
+    (send p line-to 15 15)
+    (send p append right-line)
     (send p close)
     p))
 
