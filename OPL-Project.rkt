@@ -4,6 +4,7 @@
 (require racket/gui)
 (require "Diagram-Components.rkt")
 (require "Diagram-Drawing.rkt")
+(require "Table-Utils.rkt")
 
 (define (paint-dc dc path target)
   (send dc draw-path path)
