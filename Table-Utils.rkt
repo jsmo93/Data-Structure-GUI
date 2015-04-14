@@ -30,12 +30,33 @@
 
 (provide resolve-collisions)
 (define (resolve-collisions table)
-  ())
-;Go down the list, look for matches
-;Pick an element, if the next one matches, mark as collision, resolve
-;else advance one element
-;if you get to the end, no collisions, return true
-;else repeat collision resolve
+ (define repaired-table (fix-collision table table '()))
+ (if (equal? repaired-table table) ;Keep running repairs until the table isn't changed
+     repaired-table
+     (resolve-collisions repaired-table)))
+
+(define (fix-collision table initial-table resolved-table)
+  (if (pair? table)
+      (if (and
+           (= (element-row (car table))
+              (element-row (cadr table)))
+           (= (element-column (car table))
+              (element-column (cadr table))))
+          (resolve initial-table (to-space (car table) (cadr table)))
+          (fix-collision (cdr table) initial-table (append resolved-table (car table))))
+      resolved-table)
+
+(define (to-space first-element second-element)
+    (cond ((= (car (element-parent first-element)) (car (element-parent second-element)))
+           (if (< (cdr (element-parent first-element)) (cdr (element-parent second-element)))
+               (element-parent first-element)
+               (element-parent second-element)))
+          ((< (car (element-parent first-element)) (car (element-parent second-element)))
+           (element-parent first-element))
+          (else (element-parent second-element))))
+
+(define (resolve table parent)
+;find parent space it 
 
 (provide table-entry)
 (define (table-entry entry-num table)
@@ -87,3 +108,19 @@
       (cdr
        (cdr
         (cdr table-element))))))))
+
+(provide table-col-count)
+(define (table-col-count table max-found)
+  (if (pair? table)
+      (if (> (element-column (car table)) max-found)
+          (table-col-count (cdr table) (element-column (car table)))
+          (table-col-count (cdr table) max-found))
+      max-found))
+      
+(provide table-row-count)
+(define (table-row-count table max-found)
+  (if (pair? table)
+      (if (> (element-row (car table)) max-found)
+          (table-row-count (cdr table) (element-row (car table)))
+          (table-row-count (cdr table) max-found))
+      max-found))

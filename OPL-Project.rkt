@@ -15,15 +15,6 @@
   (send dc draw-path path)
   (make-object image-snip% target))
 
-(define (resize-data-box dc str x y)
-  (send dc scale (* (/ 2 3) (string-length str)) 1)
-  (send dc draw-text str (+ 3 x) (- y 1)))
-
-(define (set-data dc str x y)
-  (if (> (string-length str) 1)
-      (resize-data-box dc str x y)
-      (send dc draw-text str (+ 3 x) (- y 1))))
-
 (define test-enclosed-target (make-bitmap 220 120))
 (define test-enclosed-dc (new bitmap-dc% [bitmap test-enclosed-target]))
 (define old-pen-enclosed (send test-enclosed-dc get-pen))
