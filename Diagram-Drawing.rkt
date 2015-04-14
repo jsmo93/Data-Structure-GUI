@@ -2,10 +2,13 @@
 (require "Diagram-Components.rkt")
 (require racket/draw)
 
+;Function to draw a specific node in a given cell of the grid
 (provide draw-node)
 (define (draw-node dc path row col)
   (send dc draw-path path (* 55 col) (* 40 row)))
 
+;Function to dynamically draw the first 5 characters of data
+;  in a given cell of the grid.
 (provide draw-data)
 (define (draw-data dc data-str row col)
   (define old-font (send dc get-font))
@@ -24,7 +27,7 @@
                 (send dc draw-text ".." (+ 41 (* 55 col)) (- (* 40 row) 1))))
          (set! data-str (string->number data-str)))
       (begin
-       (send dc set-font (make-font #:size 12 #:family 'modern))
+       (send dc set-font (make-font #:size 12 #:family 'modern)) ;Use a constant width font
        (cond ((= (string-length data-str) 1) 
               (send dc draw-path data (* 55 col) (* 40 row))
               (send dc draw-text data-str (+ 3 (* 55 col)) (- (* 40 row) 1)))
@@ -38,6 +41,7 @@
               (send dc draw-text ".." (+ 41 (* 55 col)) (- (* 40 row) 1))))
          (send dc set-font old-font))))
 
+;Helper function for initial list -> diagram conversion
 (provide element-categorizer)
 (define (element-categorizer elmnt)
   (cond ((pair? elmnt)

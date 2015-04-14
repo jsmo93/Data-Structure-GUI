@@ -28,36 +28,6 @@
       sorted-table
       (sub-sort table (append sorted-table (filter col-filter-helper table)) col-count (+ current-col 1))))
 
-(provide resolve-collisions)
-(define (resolve-collisions table)
- (define repaired-table (fix-collision table table '()))
- (if (equal? repaired-table table) ;Keep running repairs until the table isn't changed
-     repaired-table
-     (resolve-collisions repaired-table)))
-
-(define (fix-collision table initial-table resolved-table)
-  (if (pair? table)
-      (if (and
-           (= (element-row (car table))
-              (element-row (cadr table)))
-           (= (element-column (car table))
-              (element-column (cadr table))))
-          (resolve initial-table (to-space (car table) (cadr table)))
-          (fix-collision (cdr table) initial-table (append resolved-table (car table))))
-      resolved-table)
-
-(define (to-space first-element second-element)
-    (cond ((= (car (element-parent first-element)) (car (element-parent second-element)))
-           (if (< (cdr (element-parent first-element)) (cdr (element-parent second-element)))
-               (element-parent first-element)
-               (element-parent second-element)))
-          ((< (car (element-parent first-element)) (car (element-parent second-element)))
-           (element-parent first-element))
-          (else (element-parent second-element))))
-
-(define (resolve table parent)
-;find parent space it 
-
 (provide table-entry)
 (define (table-entry entry-num table)
   (if (= 0 entry-num)
