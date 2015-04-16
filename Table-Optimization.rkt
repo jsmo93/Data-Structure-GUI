@@ -1,9 +1,10 @@
 #lang racket
 
 (require "Table-Core-Utils.rkt")
-(require "Table-Sorting.rkt")
-(require "Load-Save-Utils.rkt")
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Table compression procedures
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;Removes emptry rows
 (provide compress-rows)
 (define (compress-rows table)
@@ -14,6 +15,19 @@
           table
           (compress-rows (fix-row-child compressed null (last compressed))))))
 
+;Removes empty columns, must pass in a col-sorted table
+(provide compress-cols)
+(define (compress-cols table)
+  (define compressed (col-compression table null 0 #f 0 0))
+  (if (null? compressed)
+      null
+      (if (equal? compressed table)
+          table
+          (compress-cols (fix-col-child compressed null (last compressed))))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Helper procedures
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (define (fix-row-child table new-table to-match)
   (cond ((null? (cdr table)) null)
         ((equal? (element-car (car table)) to-match)
@@ -22,7 +36,7 @@
           (append
            (list (list
                   (element-row (car table))
-                  (element-column (car table))
+                  (element-col (car table))
                   (element-type (car table))
                   (element-parent (car table))
                   (element-value (car table))
@@ -35,7 +49,7 @@
           (append
            (list (list
                   (element-row (car table))
-                  (element-column (car table))
+                  (element-col (car table))
                   (element-type (car table))
                   (element-parent (car table))
                   (element-value (car table))
@@ -49,7 +63,6 @@
            (list (car table))
            (fix-row-child (cdr table) new-table to-match))))))
          
-(provide row-compression)
 (define (row-compression table new-table last-row found-gap found-at-row found-at-col)
   (cond ((null? table) (if found-gap
                            (list (list found-at-row found-at-col))
@@ -67,7 +80,7 @@
               (append
                (list (list
                 (- (element-row (car table)) 1)
-                (element-column (car table))
+                (element-col (car table))
                 (element-type (car table))
                 (if (> (car (element-parent (car table))) last-row)
                     (list (- (car (element-parent (car table))) 1) (cadr (element-parent (car table))))
@@ -86,7 +99,7 @@
                   (append
                    (list (list
                     (- (element-row (car table)) 1)
-                    (element-column (car table))
+                    (element-col (car table))
                     (element-type (car table))
                     (element-parent (car table))
                     (element-value (car table))
@@ -96,22 +109,12 @@
                     (if (null? (element-cdr (car table)))
                         null
                         (list (- (car (element-cdr (car table))) 1) (cadr (element-cdr (car table)))))))
-                   (row-compression (cdr table) new-table last-row #t (element-row (car table)) (element-column (car table)))))
+                   (row-compression (cdr table) new-table last-row #t (element-row (car table)) (element-col (car table)))))
                  (append
                   new-table
                   (append
                    (list (car table))
                    (row-compression (cdr table) new-table (element-row (car table)) #f found-at-row found-at-col))))))))
-
-;Removes empty columns, must pass in col-sorted table
-(provide compress-cols)
-(define (compress-cols table)
-  (define compressed (col-compression table null 0 #f 0 0))
-  (if (null? compressed)
-      null
-      (if (equal? compressed table)
-          table
-          (compress-cols (fix-col-child compressed null (last compressed))))))
 
 (define (fix-col-child table new-table to-match)
   (cond ((null? (cdr table)) null)
@@ -121,7 +124,7 @@
           (append
            (list (list
                   (element-row (car table))
-                  (element-column (car table))
+                  (element-col (car table))
                   (element-type (car table))
                   (element-parent (car table))
                   (element-value (car table))
@@ -134,7 +137,7 @@
           (append
            (list (list
                   (element-row (car table))
-                  (element-column (car table))
+                  (element-col (car table))
                   (element-type (car table))
                   (element-parent (car table))
                   (element-value (car table))
@@ -148,7 +151,6 @@
            (list (car table))
            (fix-col-child (cdr table) new-table to-match))))))
          
-(provide col-compression)
 (define (col-compression table new-table last-col found-gap found-at-row found-at-col)
   (cond ((null? table) (if found-gap
                            (list (list found-at-row found-at-col))
@@ -166,7 +168,7 @@
               (append
                (list (list
                 (element-row (car table))
-                (- (element-column (car table)) 1)
+                (- (element-col (car table)) 1)
                 (element-type (car table))
                 (if (> (cadr (element-parent (car table))) last-col)
                     (list (car (element-parent (car table))) (- (cadr (element-parent (car table))) 1))
@@ -179,13 +181,13 @@
                     null
                     (list (car (element-cdr (car table))) (- (cadr (element-cdr (car table))) 1)))))
                (col-compression (cdr table) new-table last-col #t found-at-row found-at-col)))
-             (if (> (- (element-column (car table)) last-col) 1)
+             (if (> (- (element-col (car table)) last-col) 1)
                  (append
                   new-table
                   (append
                    (list (list
                     (element-row (car table))
-                    (- (element-column (car table)) 1)
+                    (- (element-col (car table)) 1)
                     (element-type (car table))
                     (element-parent (car table))
                     (element-value (car table))
@@ -195,9 +197,9 @@
                     (if (null? (element-cdr (car table)))
                         null
                         (list (car (element-cdr (car table))) (- (cadr (element-cdr (car table))) 1)))))
-                   (col-compression (cdr table) new-table last-col #t (element-row (car table)) (element-column (car table)))))
+                   (col-compression (cdr table) new-table last-col #t (element-row (car table)) (element-col (car table)))))
                  (append
                   new-table
                   (append
                    (list (car table))
-                   (col-compression (cdr table) new-table (element-column (car table)) #f found-at-row found-at-col))))))))
+                   (col-compression (cdr table) new-table (element-col (car table)) #f found-at-row found-at-col))))))))

@@ -5,8 +5,6 @@
 
 ;Empty data diagram
 (provide data)
-(define data-target (make-bitmap 55 40))
-(define data-dc (new bitmap-dc% [bitmap data-target]))
 (define data
   (let ([p (new dc-path%)])
     (send p move-to 0 0)
@@ -19,8 +17,6 @@
 
 ;Basic double box, used as the base for nodes
 (provide double-box)
-(define double-box-target (make-bitmap 55 40))
-(define double-box-dc (new bitmap-dc% [bitmap double-box-target]))
 (define double-box
   (let ([p (new dc-path%)])
     (send p move-to 0 0)
@@ -34,8 +30,6 @@
 
 ;Down arrow for connecting nodes
 (provide down-arrow)
-(define down-arrow-target (make-bitmap 55 40))
-(define down-arrow-dc (new bitmap-dc% [bitmap down-arrow-target]))
 (define down-arrow
   (let ([p (new dc-path%)])
     (send p move-to 7 7)
@@ -49,8 +43,6 @@
 
 ;Right arrow for connecting nodes
 (provide right-arrow)
-(define right-arrow-target (make-bitmap 55 40))
-(define right-arrow-dc (new bitmap-dc% [bitmap right-arrow-target]))
 (define right-arrow
   (let ([p (new dc-path%)])
     (send p move-to 23 7)
@@ -64,8 +56,6 @@
 
 ;Used to extend right arrows
 (provide right-line)
-(define right-line-target (make-bitmap 55 40))
-(define right-line-dc (new bitmap-dc% [bitmap right-line-target]))
 (define right-line
   (let ([p (new dc-path%)])
     (send p move-to 23 7)
@@ -75,8 +65,6 @@
 
 ;Base element of the list
 (provide node)
-(define node-target (make-bitmap 55 40))
-(define node-dc (new bitmap-dc% [bitmap node-target]))
 (define node
   (let ([p (new dc-path%)])
     (send p append double-box)
@@ -87,8 +75,6 @@
 
 ;Node who's cdr is not in an adjacent cell
 (provide spaced-node)
-(define spaced-node-target (make-bitmap 55 40))
-(define spaced-node-dc (new bitmap-dc% [bitmap spaced-node-target]))
 (define spaced-node
   (let ([p (new dc-path%)])
     (send p append double-box)
@@ -99,8 +85,6 @@
 
 ;Last node in a list
 (provide terminal-node)
-(define terminal-node-target (make-bitmap 55 40))
-(define terminal-node-dc (new bitmap-dc% [bitmap terminal-node-target]))
 (define terminal-node
   (let ([p (new dc-path%)])
     (send p append double-box)
@@ -112,8 +96,6 @@
 
 ;Node without a car
 (provide bypass-node)
-(define bypass-node-target (make-bitmap 55 40))
-(define bypass-node-dc (new bitmap-dc% [bitmap bypass-node-target]))
 (define bypass-node
   (let ([p (new dc-path%)])
     (send p append double-box)
@@ -125,8 +107,6 @@
 
 ;Bypass node who's car isn't in the cell below it
 (provide spaced-bypass-node)
-(define spaced-bypass-node-target (make-bitmap 55 40))
-(define spaced-bypass-node-dc (new bitmap-dc% [bitmap spaced-bypass-node-target]))
 (define spaced-bypass-node
   (let ([p (new dc-path%)])
     (send p append double-box)
@@ -138,8 +118,6 @@
 
 ;Node with no contents
 (provide null-node)
-(define null-node-target (make-bitmap 55 40))
-(define null-node-dc (new bitmap-dc% [bitmap null-node-target]))
 (define null-node
   (let ([p (new dc-path%)])
     (send p append double-box)
@@ -152,8 +130,6 @@
 
 ;Used for grid visualization
 (provide enclosure)
-(define enclosure-target (make-bitmap 55 40))
-(define enclosure-dc (new bitmap-dc% [bitmap enclosure-target]))
 (define enclosure
   (let ([p (new dc-path%)])
     (send p move-to 0 0)

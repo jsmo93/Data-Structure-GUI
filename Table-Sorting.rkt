@@ -5,12 +5,24 @@
 (define sorted-table '())
 (define sub-sorted-table '())
 
-;Main sorting function
-(provide table-sort)
-(define (table-sort table sorted-table row-count col-count)
-  (table-sort-helper table sorted-table row-count col-count 0))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Table sorting functions
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Sort table by rows
+(provide sort-table-rows)
+(define (sort-table-rows table)
+  (table-sort-helper table sorted-table (count-rows table) (count-cols table) 0))
 
-;Helper function, sort by row
+;Sort table by columns
+(provide sort-table-cols)
+(define (sort-table-cols table)
+  (define sub-sorted-table null)
+  (table-sort-helper-flip table sorted-table (count-rows table) (count-cols table) 0))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Helper functions
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Sort table by row helper
 (define (table-sort-helper table sorted-table row-count col-count current-row)
   (define (row-filter-helper entry)
     (if (= (element-row entry) current-row)
@@ -27,26 +39,20 @@
                   col-count
                   (+ current-row 1))))
 
-;Helper function, sort by column
+;Sort table by row helper
 (define (sub-sort table sorted-table col-count current-col)
   (define (col-filter-helper entry)
-    (if (= (element-column entry) current-col)
+    (if (= (element-col entry) current-col)
         #t
         #f))
   (if (= col-count current-col)
       sorted-table
       (sub-sort table (append sorted-table (filter col-filter-helper table)) col-count (+ current-col 1))))
 
-;Internal sorting function for compression
-(provide table-sort-flip)
-(define (table-sort-flip table sorted-table row-count col-count)
-  (define sub-sorted-table null)
-  (table-sort-helper-flip table sorted-table row-count col-count 0))
-
-;Helper function, sort by column
+;Sort table by column helper
 (define (table-sort-helper-flip table sorted-table row-count col-count current-col)
   (define (col-filter-helper-flip entry)
-    (if (= (element-column entry) current-col)
+    (if (= (element-col entry) current-col)
         #t
         #f))
   (if (= col-count current-col)
@@ -60,7 +66,7 @@
                               col-count
                               (+ current-col 1))))
 
-;Helper function, sort by row
+;Sort table by column helper
 (define (sub-sort-flip table sorted-table row-count current-row)
   (define (row-filter-helper-flip entry)
     (if (= (element-row entry) current-row)

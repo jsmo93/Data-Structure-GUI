@@ -3,17 +3,29 @@
 (require "Table-Core-Utils.rkt")
 (require "Table-Sorting.rkt")
 
-;Merge this and 
-(provide list-loader)
-(define (list-loader lst)
-  (define table (load-list-helper lst 0 0 0 0 1 1))
-  (table-sort table '() (table-row-count table) (table-col-count table)))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Load procedure
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Load a list into a table
+(provide load-list)
+(define (load-list lst)
+  (define tab (list-loader-one lst))
+  (list-loader-two tab lst))
 
-;Separate for debugging, will combine into master list loader
-(provide list-loader-two)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Helper procedures
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Calls the helper procedure with a spacing of 1
+;Final spacing done in 
+(define (list-loader-one lst)
+  (define table (load-list-helper lst 0 0 0 0 1 1))
+  (sort-table-rows table))
+
+;Calls the helper procedure with the spacing required
+;Uses the table from list-loader-one to determine this requirement
 (define (list-loader-two table lst)
-  (define table2 (load-list-helper lst 0 0 0 0 (table-row-count table) (table-col-count table)))
-  (table-sort table2 '() (table-row-count table2) (table-col-count table2)))
+  (define table2 (load-list-helper lst 0 0 0 0 (count-rows table) (count-cols table)))
+  (sort-table-rows table2))
 
 ;Helper procedure, create table with appropriate spacing
 (define (load-list-helper lst current-row current-col parent-row parent-col max-row max-col)
@@ -107,3 +119,38 @@
                                  max-row
                                  max-col)))))
       (list (list current-row current-col 'data (list parent-row parent-col) lst null null))))
+
+(provide save-helper)
+ (define (save-helper table current-entry)
+  (if (null? table)
+     table
+    (cond ((null? current-entry) null)
+          ((eqv? (element-type current-entry) 'data)
+           (element-value current-entry))
+          ((eqv? (element-type current-entry) 'null-node)
+           (cons null null))
+          ((eqv? (element-type current-entry) 'terminal-node)
+           (cons
+            (save-helper table (table-entry-rc
+                                (car (element-car current-entry))
+                                (cadr (element-car current-entry))
+                                table))
+            null))
+          ((eqv? (element-type current-entry) 'bypass-node)
+           (cons
+            null
+            (save-helper table (table-entry-rc
+                                (car (element-cdr current-entry))
+                                (cadr (element-cdr current-entry))
+                                table))))
+          ((eqv? (element-type current-entry) 'node)
+           (cons
+            (save-helper table (table-entry-rc
+                                (car (element-car current-entry))
+                                (cadr (element-car current-entry))
+                                table))
+            (save-helper table (table-entry-rc
+                                (car (element-cdr current-entry))
+                                (cadr (element-cdr current-entry))
+                                table))))
+          (else null))))
