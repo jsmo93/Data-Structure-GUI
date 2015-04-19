@@ -1,10 +1,10 @@
-# Data Structure GUI Documentation:
+# Data Structure GUI Documentation
 ## Creating an instance of DS-GUI-Core
 * (define gui-core (data-structure-core your-ds))
 * NOTE: At this time, "cons" elements are not supported, all structures must be lists or lists of multiple lists
 
 ## Commands and Core Procedures
-### Issuing commands
+### Issuing commands:
 * (gui-core 'command)
 
 ### Public Commands:
@@ -27,7 +27,7 @@ These are the functions used by the GUI Core
 * (draw-table table) -> Diagram-Drawing.rkt
 * (draw-enclosed-table table) -> Diagram-Drawing.rkt
 
-## Source File Information:
+## Source File Information
 ### File Descriptions:
 * Data-Structure-GUI-Core.rkt - The main interface
 * Diagram-Components.rkt - Contains the diagram images used to draw a structure
