@@ -3,6 +3,9 @@
 (require racket/gui)
 (require racket/draw)
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Diagram components
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;Empty data diagram
 (provide data)
 (define data
@@ -29,6 +32,7 @@
     p))
 
 ;Down arrow for connecting nodes
+;in non-adjacent cells
 (provide down-arrow)
 (define down-arrow
   (let ([p (new dc-path%)])
@@ -42,6 +46,7 @@
     p))
 
 ;Down arrow for connecting nodes
+;in adjacent cells
 (provide car-arrow)
 (define car-arrow
   (let ([p (new dc-path%)])
@@ -54,7 +59,7 @@
     (send p close)
     p))
 
-;Down arrow for connecting nodes
+;Used to extend down arrows
 (provide down-line)
 (define down-line
   (let ([p (new dc-path%)])
@@ -63,7 +68,8 @@
     (send p close)
     p))
 
-;Down arrow for connecting nodes
+;Used to extend down arrows.
+;Compose spaced node elements
 (provide car-line)
 (define car-line
   (let ([p (new dc-path%)])
@@ -72,7 +78,8 @@
     (send p close)
     p))
 
-;Right arrow for connecting nodes
+;Right arrow for connecting non-
+;adjacent nodes
 (provide right-arrow)
 (define right-arrow
   (let ([p (new dc-path%)])
@@ -85,7 +92,8 @@
     (send p close)
     p))
 
-;Right arrow for connecting nodes
+;Right arrow for connecting
+;adjacent nodes
 (provide cdr-arrow)
 (define cdr-arrow
   (let ([p (new dc-path%)])
@@ -98,7 +106,8 @@
     (send p close)
     p))
 
-;Used to extend right arrows
+;Used to extend right arrows.
+;Composed spaced node elements
 (provide cdr-line)
 (define cdr-line
   (let ([p (new dc-path%)])
@@ -126,7 +135,8 @@
     (send p close)
     p))
 
-;Node who's cdr is not in an adjacent cell
+;Node who's car and cdr is not
+;in an adjacent cell
 (provide spaced-node)
 (define spaced-node
   (let ([p (new dc-path%)])
@@ -136,7 +146,7 @@
     (send p close)
     p))
 
-;Node who's cdr is not in an adjacent cell
+;Node who's car is not in an adjacent cell
 (provide spaced-car-node)
 (define spaced-car-node
   (let ([p (new dc-path%)])
@@ -167,7 +177,8 @@
     (send p close)
     p))
 
-;Last node in a list
+;Last node in a list who's car
+;is not in an adjacent cell
 (provide spaced-terminal-node)
 (define spaced-terminal-node
   (let ([p (new dc-path%)])
@@ -189,7 +200,8 @@
     (send p close)
     p))
 
-;Bypass node who's car isn't in the cell below it
+;Bypass node who's cdr isn't
+;in an adjacent cell
 (provide spaced-bypass-node)
 (define spaced-bypass-node
   (let ([p (new dc-path%)])

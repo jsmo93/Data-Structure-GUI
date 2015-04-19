@@ -60,9 +60,9 @@
                        (else
                         (if (or 
                              (and (not (null? (element-car this-entry)))
-                                  (> (- (element-row this-entry) (car (element-car this-entry))) 1))
+                                  (> (- (car (element-car this-entry)) (element-row this-entry)) 1))
                              (and (not (null? (element-cdr this-entry)))
-                                  (> (- (element-col this-entry) (cadr (element-cdr this-entry))) 1)))
+                                  (> (- (cadr (element-cdr this-entry)) (element-col this-entry)) 1)))
                             (draw-spaced-node this-entry dc)
                             (draw-node
                              dc
@@ -79,12 +79,12 @@
          (draw-node dc spaced-terminal-node (element-row this-entry) (element-col this-entry)))
         ((eqv? (element-type this-entry) 'node)
          (cond ((and
-                 (> (- (element-row this-entry) (car (element-car this-entry))) 1)
-                 (> (- (element-col this-entry) (cadr (element-cdr this-entry))) 1))
+                 (> (- (car (element-car this-entry)) (element-row this-entry)) 1)
+                 (> (- (cadr (element-cdr this-entry)) (element-col this-entry)) 1))
                 (draw-node dc spaced-node (element-row this-entry) (element-col this-entry)))
-               ((> (- (element-row this-entry) (car (element-car this-entry))) 1)
+               ((> (- (car (element-car this-entry)) (element-row this-entry)) 1)
                 (draw-node dc spaced-car-node (element-row this-entry) (element-col this-entry)))
-               ((> (- (element-col this-entry) (cadr (element-cdr this-entry))) 1)
+               ((> (- (cadr (element-cdr this-entry)) (element-col this-entry)) 1)
                 (draw-node dc spaced-cdr-node (element-row this-entry) (element-col this-entry)))))))
 
 ;Function to draw a specific node in a given cell of the grid

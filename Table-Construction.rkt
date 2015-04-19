@@ -1,16 +1,22 @@
 #lang racket
 
 (require "Table-Core-Utils.rkt")
+(require "Table-Sorting.rkt")
 
-(provide find-next-open)
-(define (find-next-open table ideal-row ideal-col direction)
-  (cond ((null? table) (list ideal-row ideal-col))
-        ((null? (table-entry-rc ideal-row ideal-col table)) (list ideal-row ideal-col))
-        ((eqv? direction 'right) (find-next-open table ideal-row (+ ideal-col 1) direction))
-        ((eqv? direction 'down) (find-next-open table (+ ideal-row 1) ideal-col direction))))
-
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Table building procedure
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Takes a list and builds the representative table
 (provide build-table)
-(define (build-table lst table current-row current-col parent-row parent-col direction)
+(define (build-table lst)
+  (sort-table-rows
+   (build-table-helper lst null 0 0 0 0 'right)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Helper procedures
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Helper function to build a table
+(define (build-table-helper lst table current-row current-col parent-row parent-col direction)
   (define placement-car (find-next-open table (+ current-row 1) current-col 'right))
   (define placement-cdr (find-next-open table current-row (+ current-col 1) 'down))
   (define parent-entry null)
@@ -56,7 +62,7 @@
                      (set! table (fill-spaces table parent-row parent-col (car placement-cdr) current-col))
                      (set! table (fill-spaces table (car placement-cdr) current-col (car placement-cdr) (cadr placement-cdr)))))
                    (error "could not load structure due to spacing conflicts")))                
-           (set! table (build-table (cdr lst) table (car placement-cdr) (cadr placement-cdr) current-row current-col 'down))   
+           (set! table (build-table-helper (cdr lst) table (car placement-cdr) (cadr placement-cdr) current-row current-col 'down))   
            table))
         ((null? (cdr lst))
          (begin
@@ -90,7 +96,7 @@
                          (set! table (fill-spaces table parent-row parent-col current-row (cadr placement-car)))
                          (set! table (fill-spaces table current-row (cadr placement-car) (car placement-car) (cadr placement-car)))))
                    (error "could not load structure due to spacing conflicts"))) 
-           (set! table (build-table (car lst) table (car placement-car) (cadr placement-car) current-row current-col 'right)) 
+           (set! table (build-table-helper (car lst) table (car placement-car) (cadr placement-car) current-row current-col 'right)) 
            table))
         (else
          (begin
@@ -100,8 +106,8 @@
                     (set! table (fill-spaces table parent-row parent-col current-row current-col))
                     (set! table (fill-spaces table current-row current-col (car placement-cdr) (cadr placement-cdr)))
                     (set! table (fill-spaces table current-row current-col (car placement-car) (cadr placement-car)))
-                    (set! table (build-table (cdr lst) table (car placement-cdr) (cadr placement-cdr) current-row current-col 'down))
-                    (set! table (build-table (car lst) table (car placement-car) (cadr placement-car) current-row current-col 'right))
+                    (set! table (build-table-helper (cdr lst) table (car placement-cdr) (cadr placement-cdr) current-row current-col 'down))
+                    (set! table (build-table-helper (car lst) table (car placement-car) (cadr placement-car) current-row current-col 'right))
                     table))
                  ((not (= current-row (car placement-cdr)))
                   (if (null? (table-entry-rc (car placement-cdr) current-col table))
@@ -133,8 +139,8 @@
                             (set! table (fill-spaces table parent-row parent-col (car placement-cdr) current-col))
                             (set! table (fill-spaces table (car placement-cdr) current-col (car placement-cdr) (cadr placement-cdr)))
                             (set! table (fill-spaces table (car placement-cdr) current-col (+ 1 (car placement-cdr)) (cadr placement-car)))
-                            (set! table (build-table (cdr lst) table (car placement-cdr) (cadr placement-cdr) (car placement-cdr) current-col 'down))
-                            (set! table (build-table (car lst) table (+ 1 (car placement-cdr)) (cadr placement-car) (car placement-cdr) current-col 'right))
+                            (set! table (build-table-helper (cdr lst) table (car placement-cdr) (cadr placement-cdr) (car placement-cdr) current-col 'down))
+                            (set! table (build-table-helper (car lst) table (+ 1 (car placement-cdr)) (cadr placement-car) (car placement-cdr) current-col 'right))
                             table))
                       (error "could not load structure due to spacing conflicts")))   
                   ((not (= current-col (cadr placement-car)))
@@ -166,8 +172,8 @@
                              (set! table (fill-spaces table parent-row parent-col current-row (cadr placement-car)))
                              (set! table (fill-spaces table current-row (cadr placement-car) (car placement-cdr) (+ 1 (cadr placement-car))))
                              (set! table (fill-spaces table current-row (cadr placement-car) (car placement-car) (cadr placement-car)))
-                             (set! table (build-table (cdr lst) table (car placement-cdr) (+ 1 cadr placement-car) current-row (cadr placement-car) 'down))
-                             (set! table (build-table (car lst) table (car placement-car) (cadr placement-car) current-row (cadr placement-car) 'right))
+                             (set! table (build-table-helper (cdr lst) table (car placement-cdr) (+ 1 cadr placement-car) current-row (cadr placement-car) 'down))
+                             (set! table (build-table-helper (car lst) table (car placement-car) (cadr placement-car) current-row (cadr placement-car) 'right))
                              table))
                        (error "could not load structure due to spacing conflicts")))
                  (else
@@ -175,19 +181,31 @@
            table))
         ))
 
+;Takes a cell and finds the next open row and column
+(define (find-next-open table ideal-row ideal-col direction)
+  (cond ((null? table) (list ideal-row ideal-col))
+        ((null? (table-entry-rc ideal-row ideal-col table)) (list ideal-row ideal-col))
+        ((eqv? direction 'right) (find-next-open table ideal-row (+ ideal-col 1) direction))
+        ((eqv? direction 'down) (find-next-open table (+ ideal-row 1) ideal-col direction))))
+
+;As you build the table, fill in spaces between non-adjacent cell with the appropriate
+;diagram element
 (define (fill-spaces table starting-row starting-col ending-row ending-col)
   (if (= 0 starting-row starting-col ending-row ending-col)
       table
       (if (= starting-row ending-row)
           (fill-col-spaces table starting-row starting-col ending-row ending-col)
           (fill-row-spaces table starting-row starting-col ending-row ending-col))))
-        
+
+;Fill the column spaces with right spacers
 (define (fill-col-spaces table starting-row starting-col ending-row ending-col)
   (add-right-spacers table starting-row (+ 1 starting-col) ending-row ending-col))
-  
+ 
+;Fill the row spaces with down spacers
 (define (fill-row-spaces table starting-row starting-col ending-row ending-col)
   (add-down-spacers table (+ 1 starting-row) starting-col ending-row ending-col))
 
+;Decide to fill with a right arrow or line
 (define (add-right-spacers table starting-row starting-col ending-row ending-col)
   (define desired-cell (table-entry-rc starting-row starting-col table))
  (cond ((= starting-col ending-col) table)
@@ -206,6 +224,7 @@
               table)
              (error "could not load structure due to spacing conflicts")))))
         
+;Decide to fill with a left arrow or line
 (define (add-down-spacers table starting-row starting-col ending-row ending-col)
   (define desired-cell (table-entry-rc starting-row starting-col table))
  (cond ((= starting-row ending-row) table)
