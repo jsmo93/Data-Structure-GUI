@@ -41,12 +41,12 @@ These are the functions used by the GUI Core
 ### File Hierarchy:
 Top-Level:
 * Data-Structure-GUI-Core.rkt
-<br>
+
 Mid-Level:
 * Diagram-Drawing.rkt
 * Table-Construction.rkt
 * Table-Deconstruction.rkt
-<br>
+
 Base:
 * Diagram-Components.rkt
 * Table-Core-Utils.rkt
