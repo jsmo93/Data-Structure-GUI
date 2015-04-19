@@ -75,7 +75,11 @@
 ;Returns a new table entry with the suplied data
 (provide new-entry)
 (define (new-entry row col type parent-row parent-col value car-row car-col cdr-row cdr-col)
-  (list row col type (list parent-row parent-col) value
+  (list row col type
+        (if (or (= parent-row -1) (= parent-col -1))
+            null
+            (list parent-row parent-col))
+        value
         (if (or (= car-row -1) (= car-col -1))
             null
             (list car-row car-col))

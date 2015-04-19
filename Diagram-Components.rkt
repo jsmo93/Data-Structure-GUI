@@ -32,6 +32,19 @@
 (provide down-arrow)
 (define down-arrow
   (let ([p (new dc-path%)])
+    (send p move-to 7 0)
+    (send p line-to 7 39)
+    (send p move-to 7 39)
+    (send p line-to 12 29)
+    (send p move-to 7 39)
+    (send p line-to 2 29)
+    (send p close)
+    p))
+
+;Down arrow for connecting nodes
+(provide car-arrow)
+(define car-arrow
+  (let ([p (new dc-path%)])
     (send p move-to 7 7)
     (send p line-to 7 39)
     (send p move-to 7 39)
@@ -41,9 +54,40 @@
     (send p close)
     p))
 
+;Down arrow for connecting nodes
+(provide down-line)
+(define down-line
+  (let ([p (new dc-path%)])
+    (send p move-to 7 0)
+    (send p line-to 7 39)
+    (send p close)
+    p))
+
+;Down arrow for connecting nodes
+(provide car-line)
+(define car-line
+  (let ([p (new dc-path%)])
+    (send p move-to 7 7)
+    (send p line-to 7 39)
+    (send p close)
+    p))
+
 ;Right arrow for connecting nodes
 (provide right-arrow)
 (define right-arrow
+  (let ([p (new dc-path%)])
+    (send p move-to 0 7)
+    (send p line-to 54 7)
+    (send p move-to 54 7)
+    (send p line-to 44 12)
+    (send p move-to 54 7)
+    (send p line-to 44 2)
+    (send p close)
+    p))
+
+;Right arrow for connecting nodes
+(provide cdr-arrow)
+(define cdr-arrow
   (let ([p (new dc-path%)])
     (send p move-to 23 7)
     (send p line-to 54 7)
@@ -55,10 +99,19 @@
     p))
 
 ;Used to extend right arrows
+(provide cdr-line)
+(define cdr-line
+  (let ([p (new dc-path%)])
+    (send p move-to 23 7)
+    (send p line-to 54 7)
+    (send p close)
+    p))
+
+;Used to extend right arrows
 (provide right-line)
 (define right-line
   (let ([p (new dc-path%)])
-    (send p move-to 23 7)
+    (send p move-to 0 7)
     (send p line-to 54 7)
     (send p close)
     p))
@@ -68,8 +121,8 @@
 (define node
   (let ([p (new dc-path%)])
     (send p append double-box)
-    (send p append down-arrow)
-    (send p append right-arrow)
+    (send p append car-arrow)
+    (send p append cdr-arrow)
     (send p close)
     p))
 
@@ -78,8 +131,28 @@
 (define spaced-node
   (let ([p (new dc-path%)])
     (send p append double-box)
-    (send p append down-arrow)
-    (send p append right-line)
+    (send p append car-line)
+    (send p append cdr-line)
+    (send p close)
+    p))
+
+;Node who's cdr is not in an adjacent cell
+(provide spaced-car-node)
+(define spaced-car-node
+  (let ([p (new dc-path%)])
+    (send p append double-box)
+    (send p append car-line)
+    (send p append cdr-arrow)
+    (send p close)
+    p))
+
+;Node who's cdr is not in an adjacent cell
+(provide spaced-cdr-node)
+(define spaced-cdr-node
+  (let ([p (new dc-path%)])
+    (send p append double-box)
+    (send p append car-arrow)
+    (send p append cdr-line)
     (send p close)
     p))
 
@@ -90,7 +163,18 @@
     (send p append double-box)
     (send p move-to 15 0)
     (send p line-to 30 15)
-    (send p append down-arrow)
+    (send p append car-arrow)
+    (send p close)
+    p))
+
+;Last node in a list
+(provide spaced-terminal-node)
+(define spaced-terminal-node
+  (let ([p (new dc-path%)])
+    (send p append double-box)
+    (send p move-to 15 0)
+    (send p line-to 30 15)
+    (send p append car-line)
     (send p close)
     p))
 
@@ -101,7 +185,7 @@
     (send p append double-box)
     (send p move-to 0 0)
     (send p line-to 15 15)
-    (send p append right-arrow)
+    (send p append cdr-arrow)
     (send p close)
     p))
 
@@ -112,7 +196,7 @@
     (send p append double-box)
     (send p move-to 0 0)
     (send p line-to 15 15)
-    (send p append right-line)
+    (send p append cdr-line)
     (send p close)
     p))
 

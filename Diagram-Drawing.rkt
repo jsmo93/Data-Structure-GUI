@@ -57,13 +57,35 @@
                          (element-value this-entry)
                          (element-row this-entry)
                          (element-col this-entry)))
-                       (else 
-                        (draw-node
-                         dc
-                         (type-to-path (element-type this-entry))
-                         (element-row this-entry)
-                         (element-col this-entry))))
+                       (else
+                        (if (or 
+                             (and (not (null? (element-car this-entry)))
+                                  (> (- (element-row this-entry) (car (element-car this-entry))) 1))
+                             (and (not (null? (element-cdr this-entry)))
+                                  (> (- (element-col this-entry) (cadr (element-cdr this-entry))) 1)))
+                            (draw-spaced-node this-entry dc)
+                            (draw-node
+                             dc
+                             (type-to-path (element-type this-entry))
+                             (element-row this-entry)
+                             (element-col this-entry)))))
                  (draw-table-elements table (+ current-entry 1) dc))))))
+
+;Substitutes a spaced node before drawing
+(define (draw-spaced-node this-entry dc)
+  (cond ((eqv? (element-type this-entry) 'bypass-node)
+         (draw-node dc spaced-bypass-node (element-row this-entry) (element-col this-entry)))
+        ((eqv? (element-type this-entry) 'terminal-node)
+         (draw-node dc spaced-terminal-node (element-row this-entry) (element-col this-entry)))
+        ((eqv? (element-type this-entry) 'node)
+         (cond ((and
+                 (> (- (element-row this-entry) (car (element-car this-entry))) 1)
+                 (> (- (element-col this-entry) (cadr (element-cdr this-entry))) 1))
+                (draw-node dc spaced-node (element-row this-entry) (element-col this-entry)))
+               ((> (- (element-row this-entry) (car (element-car this-entry))) 1)
+                (draw-node dc spaced-car-node (element-row this-entry) (element-col this-entry)))
+               ((> (- (element-col this-entry) (cadr (element-cdr this-entry))) 1)
+                (draw-node dc spaced-cdr-node (element-row this-entry) (element-col this-entry)))))))
 
 ;Function to draw a specific node in a given cell of the grid
 (define (draw-node dc path row col)
@@ -108,6 +130,10 @@
         ((eqv? type 'bypass-node) bypass-node)
         ((eqv? type 'terminal-node) terminal-node)
         ((eqv? type 'null-node) null-node)
+        ((eqv? type 'down-arrow) down-arrow)
+        ((eqv? type 'down-line) down-line)
+        ((eqv? type 'right-arrow) right-arrow)
+        ((eqv? type 'right-line) right-line)
         (else null)))
 
 ;Helper function for initial list -> table conversion

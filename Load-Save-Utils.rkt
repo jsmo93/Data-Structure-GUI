@@ -70,7 +70,7 @@
                        (list parent-row parent-col)
                        null
                        (list (if (= 0 current-col)
-                                 (+ 1 max-row)
+                                 (+ max-row current-row)
                                  (+ 1 current-row))
                              current-col)
                        null))
