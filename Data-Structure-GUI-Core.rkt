@@ -12,7 +12,10 @@
   (define master-dc null)
   
   (define (load-data-structure)
-    (set! master-table (build-table master-ds)))
+    (set! master-table (build-table master-ds))
+    (set! master-target (make-target master-table))
+    (set! master-dc (make-dc master-target))
+    (draw-table master-table master-dc))
   
   (define (draw-data-structure)
     (set! master-target (make-target master-table))
@@ -23,6 +26,9 @@
     (set! master-target (make-target master-table))
     (set! master-dc (make-dc master-target))
     (draw-enclosed-table master-table master-dc))
+  
+  (define (supply-dc dc)
+    (set! master-dc dc))
   
   (define (save-data-structure)
     (set! master-ds (build-list master-table)))
@@ -45,7 +51,9 @@
           ((eq? m 'draw-enclosed) (begin (draw-enclosed-data-structure) master-target))
           ((eq? m 'help) (display-help))
           ((eq? m 'load) (load-data-structure))
+          ((eq? m 'set-dc) supply-dc)
           ((eq? m 'peek-table) master-table)
+          ((eq? m 'peek-target) master-target)
           ((eq? m 'peek-ds) master-ds)
           ((eq? m 'save) (save-data-structure))
           (else (error "Unknown request: "
