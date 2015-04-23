@@ -9,14 +9,11 @@
   
   ;Core variables
   (define gui-core (data-structure-core data-structure))
-  (define elements (get-element-list (gui-core 'peek-table)))
+  (define element-strings (get-element-strings (gui-core 'peek-table)))
+  (define elements (dmap element-strings (get-element-list (gui-core 'peek-table))))
+  (define node-selected null)
   
   (define tools-frame (new frame% 
-                           [label "Editing Tools"]
-                           [x 0]
-                           [y 0]))
-  
-    (define gui-frame (new frame% 
                            [label "Editing Tools"]
                            [x 0]
                            [y 0]))
@@ -27,10 +24,10 @@
                             [y 0]))
     
   ;GUI components
-  (define gui-panel (new vertical-panel% [parent gui-frame]))
-  (define view-panel (new vertical-panel% [parent gui-panel] [alignment (list 'center 'center)]))
+  (define tools-panel (new vertical-panel% [parent tools-frame]))
+  (define view-panel (new vertical-panel% [parent tools-panel] [alignment (list 'center 'center)]))
   (define view-button-panel (new horizontal-panel% [parent view-panel] [alignment (list 'center 'center)]))
-  (define editor-panel (new vertical-panel% [parent gui-panel] [alignment (list 'center 'center)]))
+  (define editor-panel (new vertical-panel% [parent tools-panel] [alignment (list 'center 'center)]))
   (define edit-button-panel (new horizontal-panel% [parent editor-panel] [alignment (list 'center 'center)]))
   (define editor-tools (new vertical-panel%
                             [parent editor-panel]
@@ -38,6 +35,7 @@
                             [alignment (list 'center 'top)]))
   (define editor-tools-selector (new vertical-panel% [parent editor-tools] [alignment (list 'center 'center)]))
   (define selector-message (new message% (parent editor-tools-selector) (label "Select Element:")))
+  (define editor-tools-combobox (new vertical-panel% [parent editor-tools-selector]))
   (define editor-tools-buttons (new vertical-panel% [parent editor-tools] [alignment (list 'center 'center)]))
   (define button-message (new message% (parent editor-tools-buttons) (label "Replace With:")))
   (define editor-tools-buttons-top (new horizontal-panel% [parent editor-tools-buttons] [alignment (list 'center 'center)]))
@@ -58,35 +56,69 @@
   
   (define combo-field (new combo-field%
                          (label "")
-                         (parent editor-tools-selector)
-                         (choices elements)
-                         (init-value (car elements))))
+                         (parent editor-tools-combobox)
+                         (choices element-strings)
+                         [callback (lambda (button event)
+                                     (refresh-node-selected))]
+                                       
+                         (init-value (car element-strings))))
+  
+  (set! node-selected (get-node-selected (send combo-field get-value) elements))
   
   (define text-field (new text-field%
                         (label "")
                         (parent editor-data)
+                        [callback (lambda (button event)
+                                      (draw-viewer-frame (gui-core 'replace-data (send text-field get-value) node-selected)))]
                         (init-value "Null")))
 
-  
   (new button% [parent editor-tools-buttons-top]
        [label "Node"]
        [min-width 110]
-       [callback (lambda (x y) null)])
+       [callback (lambda (button event)
+                   (begin
+                     (set! node-selected
+                           (get-node-selected
+                            (send combo-field get-value)
+                            elements))
+                     ((gui-core 'replace-node) 'node node-selected) 
+                     (draw-viewer-frame (gui-core 'peek-target))))])
     
   (new button% [parent editor-tools-buttons-top]
        [label "Data Element"]
        [min-width 110]
-       [callback (lambda (x y) null)])
+       [callback (lambda (button event)
+                   (begin
+                     (set! node-selected
+                           (get-node-selected
+                            (send combo-field get-value)
+                            elements))
+                     ((gui-core 'replace-node) 'data node-selected) 
+                     (draw-viewer-frame (gui-core 'peek-target))))])
   
   (new button% [parent editor-tools-buttons-bottom]
        [label "Terminal-Node"]
        [min-width 110]
-       [callback (lambda (x y) null)])
+       [callback (lambda (button event)
+                   (begin
+                     (set! node-selected
+                           (get-node-selected
+                            (send combo-field get-value)
+                            elements))
+                     ((gui-core 'replace-node) 'terminal-node node-selected) 
+                     (draw-viewer-frame (gui-core 'peek-target))))])
   
   (new button% [parent editor-tools-buttons-bottom]
        [label "Bypass-Node"]
        [min-width 110]
-       [callback (lambda (x y) null)])
+       [callback (lambda (button event)
+                   (begin
+                     (set! node-selected
+                           (get-node-selected
+                            (send combo-field get-value)
+                            elements))
+                     ((gui-core 'replace-node) 'bypass-node node-selected) 
+                     (draw-viewer-frame (gui-core 'peek-target))))])
   
   (new button% [parent view-button-panel]
        [label "Edit"]
@@ -95,8 +127,9 @@
                    (begin 
                      (send view-panel show #f)
                      (send editor-panel show #t)
+                     (refresh-node-selected)
                      (gui-core 'draw-enclosed)
-                     (draw-viewer-frame)))])
+                     (draw-viewer-frame (gui-core 'peek-target))))])
   
   (new button% [parent view-button-panel]
        [label "Exit"]
@@ -111,8 +144,22 @@
                    (begin
                      (send view-panel show #t)
                      (send editor-panel show #f)
+                     (gui-core 'save)
                      (gui-core 'draw)
-                     (draw-viewer-frame)))])
+                     (set! element-strings (get-element-strings (gui-core 'peek-table)))
+                     (set! elements (dmap element-strings (get-element-list (gui-core 'peek-table))))
+                     ;delete combo box and remake
+                     (send editor-tools-combobox delete-child (car (send editor-tools-combobox get-children)))
+                     (set! combo-field (new combo-field%
+                         (label "")
+                         (parent editor-tools-combobox)
+                         (choices element-strings)
+                         [callback (lambda (button event)
+                                     (refresh-node-selected))]
+                         (init-value (car element-strings))))
+                     (send combo-field set-value (car element-strings))
+                     (refresh-node-selected)
+                     (draw-viewer-frame (gui-core 'peek-target))))])
   
   (new button% [parent edit-button-panel]
        [label "Cancel"]
@@ -121,23 +168,51 @@
                    (begin
                      (send view-panel show #t)
                      (send editor-panel show #f)
+                     (gui-core 'load)
                      (gui-core 'draw)
-                     (draw-viewer-frame)))])
+                     (send combo-field set-value (car element-strings))
+                     (refresh-node-selected)
+                     (draw-viewer-frame (gui-core 'peek-target))))])
 
-  (define (draw-viewer-frame)
+  (define (draw-viewer-frame btmp)
     (if (not (null? (send data-panel get-children)))
         (send data-panel delete-child (car (send data-panel get-children)))
         null)
     (define canvas (new bitmap-canvas%
                         [parent data-panel]
-                        [min-width (+ 2 (send (gui-core 'peek-target) get-width))]
-                        [min-height (+ 2(send (gui-core 'peek-target) get-height))]
-                        [bitmap (gui-core 'peek-target)]))
+                        [min-width (+ 2 (send btmp get-width))]
+                        [min-height (+ 2(send btmp get-height))]
+                        [bitmap btmp]))
     (send viewer-frame show #t)
     #t)
+  
+  (define (refresh-node-selected)
+    (begin
+      (set! node-selected (get-node-selected
+                           (send combo-field get-value)
+                           elements))
+      (if (null?
+           (car
+            (cdr
+             (cdr
+              (cdr
+               (cdr node-selected))))))
+          (begin
+            (send editor-data show #f)
+            (send data-message show #f))
+          (begin
+            (send editor-data show #t)
+            (send data-message show #t)
+            (send text-field set-value
+                  (number->string (car
+                   (cdr
+                    (cdr
+                     (cdr
+                      (cdr node-selected)))))))))))
+  
   (send editor-panel show #f)
   (send viewer-frame show #t)
-  (send gui-frame show #t))
+  (send tools-frame show #t))
 
   
 ;Bitmap-Canvas courtesy of stackoverflow
@@ -153,7 +228,7 @@
       (send (get-dc) draw-bitmap bitmap 0 0))
     (super-new)))
                
-(define (get-element-list table)
+(define (get-element-strings table)
   (if(null? table)
      null
      (if (not (or
@@ -170,5 +245,30 @@
              (number->string (cadr (car table)))
              ") "
              (symbol->string (caddr (car table))))
+            (get-element-strings (cdr table))))
+         (get-element-strings (cdr table)))))
+
+(define (get-element-list table)
+  (if(null? table)
+     null
+     (if (not (or
+              (eqv? (caddr (car table)) 'down-arrow)
+              (eqv? (caddr (car table)) 'down-line)
+              (eqv? (caddr (car table)) 'right-arrow)
+              (eqv? (caddr (car table)) 'right-line)))
+         (begin
+           (cons
+            (car table)
             (get-element-list (cdr table))))
          (get-element-list (cdr table)))))
+
+(define (dmap l1 l2)
+  (if (or (null? l1) (null? l2))
+      null
+      (cons (cons (car l1) (car l2))
+            (dmap (cdr l1) (cdr l2)))))
+
+(define (get-node-selected str elements)
+  (cond ((null? elements) null)
+        ((equal? str (car (car elements))) (cdr (car elements)))
+        (else (get-node-selected str (cdr elements)))))
