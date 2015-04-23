@@ -11,17 +11,29 @@
   (define gui-core (data-structure-core data-structure))
   (define elements (get-element-list (gui-core 'peek-table)))
   
-  (define gui-frame (new frame% 
-                         [label "Data Structure GUI"]
-                         [x 0]
-                         [y 0]))
+  (define tools-frame (new frame% 
+                           [label "Editing Tools"]
+                           [x 0]
+                           [y 0]))
   
+    (define gui-frame (new frame% 
+                           [label "Editing Tools"]
+                           [x 0]
+                           [y 0]))
+  
+  (define viewer-frame (new frame%
+                            [label "DS Viewer"]
+                            [x 350]
+                            [y 0]))
+    
   ;GUI components
-  (define gui-panel (new horizontal-panel% [parent gui-frame]))
-  (define gui-left (new vertical-panel% [parent gui-panel] [alignment (list 'left 'center)]))
-  (define gui-right (new vertical-panel% [parent gui-panel] [alignment (list 'right 'center)]))
+  (define gui-panel (new vertical-panel% [parent gui-frame]))
+  (define view-panel (new vertical-panel% [parent gui-panel] [alignment (list 'center 'center)]))
+  (define view-button-panel (new horizontal-panel% [parent view-panel] [alignment (list 'center 'center)]))
+  (define editor-panel (new vertical-panel% [parent gui-panel] [alignment (list 'center 'center)]))
+  (define edit-button-panel (new horizontal-panel% [parent editor-panel] [alignment (list 'center 'center)]))
   (define editor-tools (new vertical-panel%
-                            [parent gui-left]
+                            [parent editor-panel]
                             [min-width 280]
                             [alignment (list 'center 'top)]))
   (define editor-tools-selector (new vertical-panel% [parent editor-tools] [alignment (list 'center 'center)]))
@@ -30,19 +42,19 @@
   (define button-message (new message% (parent editor-tools-buttons) (label "Replace With:")))
   (define editor-tools-buttons-top (new horizontal-panel% [parent editor-tools-buttons] [alignment (list 'center 'center)]))
   (define editor-tools-buttons-bottom (new horizontal-panel% [parent editor-tools-buttons] [alignment (list 'center 'center)]))
-  (define editor-data (new vertical-panel% [parent gui-left] [alignment (list 'center 'center)]))
+  (define editor-data (new vertical-panel% [parent editor-panel] [alignment (list 'center 'center)]))
   (define data-message (new message% (parent editor-data) (label "Edit Data:")))
-  (define data-panel (new vertical-panel% 
-                         [parent gui-right]
-                         [border 2]
-                         [min-width (send (gui-core 'peek-target) get-width)]
-                         [min-height (send (gui-core 'peek-target) get-height)]
-                         [alignment (list 'center 'top)]))
-  (define view-editor-panel (new vertical-panel% [parent gui-right] [alignment (list 'center 'center)]))
-  (define view-button-panel (new horizontal-panel% [parent view-editor-panel] [alignment (list 'center 'center)]))
-  (define edit-button-panel (new horizontal-panel% [parent view-editor-panel] [alignment (list 'center 'center)]))
   
-  (define canvas (new bitmap-canvas% [parent data-panel] [bitmap (gui-core 'peek-target)]))
+  (define data-panel (new vertical-panel% 
+                            [parent viewer-frame]
+                            [border 2]
+                            [alignment (list 'center 'top)]))
+  
+  (define canvas (new bitmap-canvas%
+                      [parent data-panel]
+                      [min-width (+ 2 (send (gui-core 'peek-target) get-width))]
+                      [min-height (+ 2(send (gui-core 'peek-target) get-height))]
+                      [bitmap (gui-core 'peek-target)]))
   
   (define combo-field (new combo-field%
                          (label "")
@@ -58,97 +70,74 @@
   
   (new button% [parent editor-tools-buttons-top]
        [label "Node"]
+       [min-width 110]
        [callback (lambda (x y) null)])
     
   (new button% [parent editor-tools-buttons-top]
        [label "Data Element"]
+       [min-width 110]
        [callback (lambda (x y) null)])
   
   (new button% [parent editor-tools-buttons-bottom]
        [label "Terminal-Node"]
+       [min-width 110]
        [callback (lambda (x y) null)])
   
   (new button% [parent editor-tools-buttons-bottom]
        [label "Bypass-Node"]
+       [min-width 110]
        [callback (lambda (x y) null)])
-
   
   (new button% [parent view-button-panel]
        [label "Edit"]
-       [callback (lambda (x y) null)])
+       [min-width 110]
+       [callback (lambda (button event)
+                   (begin 
+                     (send view-panel show #f)
+                     (send editor-panel show #t)
+                     (gui-core 'draw-enclosed)
+                     (draw-viewer-frame)))])
   
   (new button% [parent view-button-panel]
        [label "Exit"]
-       [callback (lambda (x y) null)])
+       [min-width 110]
+       [callback (lambda (button event)
+                   null)])
   
   (new button% [parent edit-button-panel]
        [label "Save"]
-       [callback (lambda (x y) null)])
-  
-  (new button% [parent edit-button-panel]
-       [label "Undo"]
-       [callback (lambda (x y) null)])
-  
-  (new button% [parent edit-button-panel]
-       [label "Redo"]
-       [callback (lambda (x y) null)])
+       [min-width 110]
+       [callback (lambda (button event)
+                   (begin
+                     (send view-panel show #t)
+                     (send editor-panel show #f)
+                     (gui-core 'draw)
+                     (draw-viewer-frame)))])
   
   (new button% [parent edit-button-panel]
        [label "Cancel"]
-       [callback (lambda (x y) null)])
-#|
-(define mb (new menu-bar% [parent vis_frame]))
+       [min-width 110]
+       [callback (lambda (button event)
+                   (begin
+                     (send view-panel show #t)
+                     (send editor-panel show #f)
+                     (gui-core 'draw)
+                     (draw-viewer-frame)))])
 
-(define m_file (new menu% [label "File"] [parent mb]))
-(define m_help (new menu% [label "Help"] [parent mb]))
-
-(new menu-item%
-       [parent m_help]
-       [label "About"]
-       [callback (lambda (b e) (message-box "About" "This is an exploration!" vis_frame))])
-
-(new menu-item%
-       [parent m_help]
-       [label "Contact"]
-       [callback (lambda (b e) (message-box "Contact" "Contact Info: John Smith" vis_frame))])
-
-(new menu-item%
-       [parent m_file]
-       [label "Load"]
-       [callback (lambda (b e)  (send edit_frame show #t))])
-
-(new menu-item%
-       [parent m_file]
-       [label "Save"]
-       [callback (lambda (b e)  (send edit_frame show #f))])
-
-(new menu-item%
-       [parent m_file]
-       [label "Exit"]
-       [callback (lambda (b e)  (send vis_frame show #f))])
-
-(new separator-menu-item% [parent m_file])
-
-(define panel (new horizontal-panel% [parent vis_frame] [alignment '(center center)]))
-c
-
-(new button% [parent panel]
-             [label "Save File"]
-             [callback (lambda (button event)
-                         (send edit_frame show #f))])
-
-(new button% [parent panel]
-             [label "Exit"]
-             [callback (lambda (button event)
-                         (send vis_frame show #f))])
-
-(define msg (new message% [parent vis_frame]
-                          [label "Open a .rkt file containing a single list named lst"]))
-
-(define edit_msg (new message% [parent edit_frame]
-                          [label "This is the data editing window"]))
-|#
-(send gui-frame show #t))
+  (define (draw-viewer-frame)
+    (if (not (null? (send data-panel get-children)))
+        (send data-panel delete-child (car (send data-panel get-children)))
+        null)
+    (define canvas (new bitmap-canvas%
+                        [parent data-panel]
+                        [min-width (+ 2 (send (gui-core 'peek-target) get-width))]
+                        [min-height (+ 2(send (gui-core 'peek-target) get-height))]
+                        [bitmap (gui-core 'peek-target)]))
+    (send viewer-frame show #t)
+    #t)
+  (send editor-panel show #f)
+  (send viewer-frame show #t)
+  (send gui-frame show #t))
 
   
 ;Bitmap-Canvas courtesy of stackoverflow
@@ -158,17 +147,28 @@ c
     (inherit get-dc)
     (define/override (on-paint)
       (send (get-dc) draw-bitmap bitmap 0 0))
+    (define/public (set-bitmap new-bitmap)
+      (set! bitmap new-bitmap))
+    (define/public (repaint)
+      (send (get-dc) draw-bitmap bitmap 0 0))
     (super-new)))
-
+               
 (define (get-element-list table)
   (if(null? table)
      null
-     (cons
-      (string-append
-       "("
-       (number->string (car (car table)))
-       ", "
-       (number->string (cadr (car table)))
-       ") "
-       (symbol->string (caddr (car table))))
-      (get-element-list (cdr table)))))
+     (if (not (or
+              (eqv? (caddr (car table)) 'down-arrow)
+              (eqv? (caddr (car table)) 'down-line)
+              (eqv? (caddr (car table)) 'right-arrow)
+              (eqv? (caddr (car table)) 'right-line)))
+         (begin
+           (cons
+            (string-append
+             "("
+             (number->string (car (car table)))
+             ", "
+             (number->string (cadr (car table)))
+             ") "
+             (symbol->string (caddr (car table))))
+            (get-element-list (cdr table))))
+         (get-element-list (cdr table)))))
