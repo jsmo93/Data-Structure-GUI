@@ -5,61 +5,74 @@
 
 ## Using DS GUI
 ### Using a user-defined data structure
-1. Open Sandbox.rkt
-2. Edit "ds"
+Open Sandbox.rkt
+
+Edit "ds"
 
 ![Edit your data structure](1.png)
 
-3. Note the name of the DS-GUI instance
-4. Click "Run" in Racket
+Note the name of the DS-GUI instance
+
+Click "Run" in Racket
 
 ![Create an instance of DS-GUI](2.png)
 
-5. Start DS-GUI
+Start DS-GUI
 
 ![Start DS-GUI](3.png)
 
-6. View the data structure
+View the data structure
 
 ![Viewing the data structure](4.png)
 
-7. Click edit to go into editing mode
+Click edit to go into editing mode
 
 ![Click edit](5.png)
 
-8. Select a data element
+Select a data element
 
 ![Select a data element](6.png)
 
-9. Edit the data
+Edit the data
 
 ![Edit the data](7.png)
 
-10. Click "Save"
-11. Save the changes to a variable
+Click "Save"
+
+Save the changes to a variable
 
 ![Save the changes, output changes](8.png)
 
 ### Using a template data structure
-1. Open Sandbox.rkt
-2. Edit "ds" to point to a template from Templates.rkt
+Open Sandbox.rkt
+
+Edit "ds" to point to a template from Templates.rkt
 
 ![Edit your data structure](9.png)
-3. Note the name of the DS-GUI instance
-4. Click "Run" in Racket
-5. Start DS-GUI
-6. View the data structure
+
+Note the name of the DS-GUI instance
+
+Click "Run" in Racket
+
+Start DS-GUI
+
+View the data structure
 
 ![Viewing the data structure](10.png)
-7. Click edit to go into editing mode
-8. Select a data element
+
+Click edit to go into editing mode
+
+Select a data element
 
 ![Select a data element](11.png)
-9. Edit the data
+
+Edit the data
 
 ![Edit the data](12.png)
-10. Click "Save"
-11. Save the changes to a variable
+
+Click "Save"
+
+Save the changes to a variable
 
 ![Save the changes, output changes](13.png)
 
