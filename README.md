@@ -1,6 +1,6 @@
 # Data Structure GUI
 
-##Authors
+##Author
 Josh Smolinski
 
 ##Overview
