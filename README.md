@@ -4,7 +4,7 @@
 Josh Smolinski
 
 ##Overview
-The Data Structure GUI (or DS-GUI) is a tool which allows users to see and manipulate data in list-based data structures in scheme. DS-GUI will display a representation of most data structures composed of numbers and strings built using the list keyword.
+The Data Structure GUI (or DS-GUI) is a tool which allows users to see and manipulate data in list-based data structures in scheme. DS-GUI will display a representation of most simple data structures composed of numbers and strings built using the list keyword.
 
 ##Screenshot
 
