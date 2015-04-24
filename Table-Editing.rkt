@@ -2,6 +2,10 @@
 
 (require "Table-Core-Utils.rkt")
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Table editing procedures
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Replace data in a given element with what the user specified
 (provide replace-data-entry)
 (define (replace-data-entry table value entry)
   (replace-entry table (element-row entry) (element-col entry) 
@@ -15,7 +19,3 @@
                              -1
                              -1
                              -1)))
-
-(provide replace-node-entry)
-(define (replace-node-entry table value entry)
-  (null))

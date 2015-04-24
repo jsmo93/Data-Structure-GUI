@@ -7,6 +7,11 @@
 
 (provide data-structure-core)
 (define (data-structure-core data-structure)
+  
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  ; GUI data structures
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  ;These structures hold the state of the whole program
   (define master-ds null)
   (define master-table null)
   (define master-target null)
@@ -16,6 +21,10 @@
   (define editing-target null)
   (define editing-dc null)
   
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  ; GUI core procedures
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  ;Take the master data structure and build everything from it
   (define (load-data-structure)
     (set! master-table (build-table master-ds))
     (set! master-target (make-target master-table))
@@ -26,16 +35,19 @@
     (set! editing-dc (make-dc editing-target))
     (draw-table master-table master-dc))  
   
+  ;Draw the master data structure onto the target bitmap
   (define (draw-data-structure)
     (set! master-target (make-target master-table))
     (set! master-dc (make-dc master-target))
     (draw-table master-table master-dc))
   
+  ;Draw the master data structure with row, col gridlines
   (define (draw-enclosed-data-structure)
     (set! master-target (make-target master-table))
     (set! master-dc (make-dc master-target))
     (draw-enclosed-table master-table master-dc))
   
+  ;Replace the data in a given cell with a given value
   (define (replace-data-data-structure value entry)
     (set! editing-table (replace-data-entry editing-table value entry))
     (set! editing-target (make-target editing-table))
@@ -43,22 +55,12 @@
     (draw-enclosed-table editing-table editing-dc)
     editing-target)
   
-    (define (replace-node-data-structure value entry)
-      (set! editing-table (replace-node-entry editing-table value entry))
-      (set! editing-ds (build-list editing-table))
-      (set! editing-table (build-table editing-ds))
-      (set! editing-target (make-target editing-table))
-      (set! editing-dc (make-dc editing-target))
-      (draw-enclosed-table editing-table editing-dc)
-    editing-target)
-  
-  (define (supply-dc dc)
-    (set! master-dc dc))
-  
+  ;Replace the master data structure with what the user has created
   (define (save-data-structure)
     (set! master-ds (build-list editing-table))
     (load-data-structure))
   
+  ;Display the help output
   (define (display-help)
     (begin
       (write "Supported Commands:")
@@ -72,6 +74,9 @@
       (write "save - Saves the data structure and returns it")
       (newline)))
   
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  ; Dispatch procedure
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   (define (dispatch m [replace-with null] [replace-entry null])
     (cond ((eq? m 'draw) (begin (draw-data-structure) master-target))
           ((eq? m 'draw-enclosed) (begin (draw-enclosed-data-structure) master-target))
@@ -80,7 +85,7 @@
           ((eq? m 'peek-table) master-table)
           ((eq? m 'peek-target) master-target)
           ((eq? m 'peek-ds) master-ds)
-          ((eq? m 'replace-data) (replace-data-data-structure replace-with replace-entry)) 
+          ((eq? m 'replace-data) (replace-data-data-structure replace-with replace-entry))
           ((eq? m 'save) (save-data-structure))
           (else (error "Unknown request: "
                        m))))
@@ -88,9 +93,12 @@
   (set! master-ds data-structure)
   (load-data-structure)
   dispatch)
-    
-    (define (copy-struct table)
-      (if (null? table)
-          null
-          (cons (car table)
-                (copy-struct (cdr table)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; External helper procedures
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(define (copy-struct table)
+  (if (null? table)
+      null
+      (cons (car table)
+            (copy-struct (cdr table)))))
