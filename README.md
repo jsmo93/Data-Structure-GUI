@@ -62,7 +62,7 @@ The tool was created to allow beginning Scheme programmers to see how their data
 That being said, the Data Structure GUI is really a functional prototype. As a prototype it has a number of limitations. It does not support very complicated structures. All nodes in the structure must either point to another node, data, or null. No node can point to more than one data element.
 
 ## Documentation
-The latest release of the Data Structure GUI can be found here
+The latest release of the Data Structure GUI can be found [here](https://github.com/oplS15projects/Data-Structure-GUI/releases/tag/3.0)
 
 To use the DS-GUI in its current state:
 
