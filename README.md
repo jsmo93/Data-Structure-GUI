@@ -1,14 +1,19 @@
 # Data Structure GUI
 
-##Authors
+##Author
 Josh Smolinski
 
 ##Overview
-The Data Structure GUI (or DS-GUI) is a tool which allows users to see and manipulate data in list-based data structures in scheme. DS-GUI will display a representation of most data structures composed of numbers and strings built using the list keyword.
+The Data Structure GUI (or DS-GUI) is a tool which allows users to see and manipulate data in list-based data structures in scheme. DS-GUI will display a representation of most simple data structures composed of numbers and strings built using the list keyword.
 
-##Screenshot
+##Screenshots
+
+This image shows DS-GUI in viewing mode. Here it is showing the visual representation of a fictional homebrew recipe. Each sublist is a category of ingredient. Each element of a sublist is an ingredient name and amount.
 
 ![Viewing-Data with DS-GUI](View-Data.png)
+
+This image shows DS-GUI in editing mode. On the left there is a list of all of the data elements and their values. The user selects an element, edits the element, and then saves or cancels to return to viewing mode.
+
 ![Editing-Data with DS-GUI](Edit-Data.png)
 
 ##Concepts Demonstrated
@@ -60,6 +65,7 @@ That being said, the Data Structure GUI is really a functional prototype. As a p
 The latest release of the Data Structure GUI can be found here
 
 To use the DS-GUI in its current state:
+
 1. Open Sandbox.rkt
 2. Change "ds" to your data structure
 3. Click Run in Racket
