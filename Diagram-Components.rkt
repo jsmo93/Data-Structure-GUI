@@ -84,11 +84,11 @@
 (define right-arrow
   (let ([p (new dc-path%)])
     (send p move-to 0 7)
-    (send p line-to 54 7)
-    (send p move-to 54 7)
-    (send p line-to 44 12)
-    (send p move-to 54 7)
-    (send p line-to 44 2)
+    (send p line-to 149 7)
+    (send p move-to 149 7)
+    (send p line-to 139 12)
+    (send p move-to 149 7)
+    (send p line-to 139 2)
     (send p close)
     p))
 
@@ -98,11 +98,11 @@
 (define cdr-arrow
   (let ([p (new dc-path%)])
     (send p move-to 23 7)
-    (send p line-to 54 7)
-    (send p move-to 54 7)
-    (send p line-to 44 12)
-    (send p move-to 54 7)
-    (send p line-to 44 2)
+    (send p line-to 149 7)
+    (send p move-to 149 7)
+    (send p line-to 139 12)
+    (send p move-to 149 7)
+    (send p line-to 139 2)
     (send p close)
     p))
 
@@ -112,7 +112,7 @@
 (define cdr-line
   (let ([p (new dc-path%)])
     (send p move-to 23 7)
-    (send p line-to 54 7)
+    (send p line-to 149 7)
     (send p close)
     p))
 
@@ -121,7 +121,7 @@
 (define right-line
   (let ([p (new dc-path%)])
     (send p move-to 0 7)
-    (send p line-to 54 7)
+    (send p line-to 149 7)
     (send p close)
     p))
 
@@ -229,8 +229,8 @@
 (define enclosure
   (let ([p (new dc-path%)])
     (send p move-to 0 0)
-    (send p line-to 54 0)
-    (send p line-to 54 39)
+    (send p line-to 149 0)
+    (send p line-to 149 39)
     (send p line-to 0 39)
     (send p line-to 0 0)
     (send p close)
