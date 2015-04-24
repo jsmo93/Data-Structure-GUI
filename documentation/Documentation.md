@@ -4,7 +4,7 @@
 * NOTE: At this time, "cons" elements are not supported, all structures must be lists or lists of multiple lists
 
 ## Using DS GUI
-### Using a user-defined data structure
+### Using a user-defined data structure:
 * Open Sandbox.rkt
 
 * Edit "ds"
@@ -13,9 +13,9 @@
 
 * Note the name of the DS-GUI instance
 
-* Click "Run" in Racket
-
 ![Create an instance of DS-GUI](2.png)
+
+* Click "Run" in Racket
 
 * Start DS-GUI
 
@@ -25,7 +25,7 @@
 
 ![Viewing the data structure](4.png)
 
-* Click edit to go into editing mode
+* Click "Edit" to go into editing mode
 
 ![Click edit](5.png)
 
@@ -43,7 +43,7 @@
 
 ![Save the changes, output changes](8.png)
 
-### Using a template data structure
+### Using a template data structure:
 * Open Sandbox.rkt
 
 * Edit "ds" to point to a template from Templates.rkt
@@ -60,7 +60,7 @@
 
 ![Viewing the data structure](10.png)
 
-* Click edit to go into editing mode
+* Click "Edit" to go into editing mode
 
 * Select a data element
 
@@ -84,7 +84,7 @@
 * 'exit -> Closes DS-GUI
 * 'save -> Returns the current data structure being shown
 
-## Development Information:
+## Development Information
 ### GUI Core:
 The Data Structure GUI is built on the Data-Structure-GUI-core which maintains the various data structures and procedures to manipulate them. The GUI core accepts the following commands from the GUI:
 * 'draw -> Draws the data structure
@@ -134,6 +134,6 @@ Base:
 * Table-Sorting.rkt
 
 Accessory:
-Sandbox.rkt
-Templates.rkt
+* Sandbox.rkt
+* Templates.rkt
 
