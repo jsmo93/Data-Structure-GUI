@@ -60,6 +60,7 @@ That being said, the Data Structure GUI is really a functional prototype. As a p
 The latest release of the Data Structure GUI can be found here
 
 To use the DS-GUI in its current state:
+
 1. Open Sandbox.rkt
 2. Change "ds" to your data structure
 3. Click Run in Racket
