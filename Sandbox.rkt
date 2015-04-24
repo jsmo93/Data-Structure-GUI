@@ -4,7 +4,7 @@
 (require "Data-Structure-GUI.rkt")
 (require "Templates.rkt")
 
-(define ds race-times)
+(define ds beer-template)
 
 (define gui (ds-gui ds))
 (gui 'help)

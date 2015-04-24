@@ -19,6 +19,8 @@
 (provide beer-template)
 (define beer-template 
   (list 
-   (list "HOPS:" "1oz Cascade" "1oz Citra" "2oz Zythos")
-   (list "SUGARS:" "4lbs Malt Extract" "1lb Honey" "1lb Dextrose")
-   (list "FRUIT:" "6cups Lime Juice" "1oz Apple Extract")))
+   (list "HOPS:" "1oz Cascade" "1oz Citra" "1oz Zythos")
+   (list "MALT EXTRACT" "4lbs Light" "2lbs Munich" "1lb Wheat")
+   (list "FERMENTABLES:"  "1lb Honey" "1lb Dextrose")
+   (list "GRAINS:" "10oz Biscuit Malt" "10oz Crystal Malt")
+   (list "FRUIT:" "4cups Apple Juice" "1cup Lemon Juice")))

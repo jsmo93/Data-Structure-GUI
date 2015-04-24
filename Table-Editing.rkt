@@ -14,7 +14,9 @@
                              (element-type entry)
                              (car (element-parent entry))
                              (cadr (element-parent entry))
-                             value
+                             (if (not(string->number value))
+                                 value
+                                 (string->number value))
                              -1
                              -1
                              -1
